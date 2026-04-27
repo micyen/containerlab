@@ -265,7 +265,11 @@ func (d *DefaultNode) Delete(ctx context.Context) (err error) {
 		if cleanupErr != nil {
 			err = errors.Join(
 				err,
-				fmt.Errorf("failed to cleanup parking netns for node %q: %w", d.Cfg.ShortName, cleanupErr),
+				fmt.Errorf(
+					"failed to cleanup parking netns for node %q: %w",
+					d.Cfg.ShortName,
+					cleanupErr,
+				),
 			)
 		}
 	}()
@@ -274,7 +278,11 @@ func (d *DefaultNode) Delete(ctx context.Context) (err error) {
 	if parkPath, parkErr := d.parkingNetNSPath(); parkErr == nil {
 		parkingNode = clablinks.NewParkingNode(d.Cfg.LongName, parkPath)
 		if err := parkingNode.DiscoverOwnedEndpoints(ctx, d); err != nil {
-			return fmt.Errorf("failed to discover parked interfaces for node %q: %w", d.Cfg.ShortName, err)
+			return fmt.Errorf(
+				"failed to discover parked interfaces for node %q: %w",
+				d.Cfg.ShortName,
+				err,
+			)
 		}
 	}
 
@@ -320,7 +328,11 @@ func (d *DefaultNode) GetContainers(ctx context.Context) ([]clabruntime.GenericC
 	// check that we retrieved some container information
 	// otherwise throw ErrContainersNotFound error
 	if len(cnts) == 0 {
-		return nil, fmt.Errorf("Node: %s. %w", d.OverwriteNode.GetContainerName(), ErrContainersNotFound)
+		return nil, fmt.Errorf(
+			"Node: %s. %w",
+			d.OverwriteNode.GetContainerName(),
+			ErrContainersNotFound,
+		)
 	}
 
 	return cnts, err
@@ -905,7 +917,11 @@ func (d *DefaultNode) AdoptEndpoint(e clablinks.Endpoint) error {
 
 	owner := e.GetNode()
 	if owner == nil {
-		return fmt.Errorf("node %q cannot adopt endpoint %q without an owner", d.Cfg.ShortName, e.GetIfaceName())
+		return fmt.Errorf(
+			"node %q cannot adopt endpoint %q without an owner",
+			d.Cfg.ShortName,
+			e.GetIfaceName(),
+		)
 	}
 
 	if owner.GetShortName() != d.Cfg.ShortName {
@@ -1159,7 +1175,11 @@ func (d *DefaultNode) Start(ctx context.Context) error {
 		// (for example IP addresses added during deploy exec phase).
 		execCollection := clabexec.NewExecCollection()
 		if err := d.RunExecFromConfig(ctx, execCollection); err != nil {
-			log.Errorf("failed to run exec commands for node %q on lifecycle start: %v", cfg.ShortName, err)
+			log.Errorf(
+				"failed to run exec commands for node %q on lifecycle start: %v",
+				cfg.ShortName,
+				err,
+			)
 		}
 		execCollection.Log()
 	}

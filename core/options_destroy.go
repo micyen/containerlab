@@ -14,7 +14,7 @@ type DestroyOptions struct {
 	nodeFilter     []string
 	// varsFiles is topology template vars from CLI (--vars), used when destroying all labs
 	// so each topology can be loaded with the same vars (e.g. templated topologies).
-	varsFiles      []string
+	varsFiles []string
 }
 
 // NewDestroyOptions returns a new destroy options object.

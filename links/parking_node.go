@@ -97,7 +97,11 @@ func (p *ParkingNode) RestoreTo(ctx context.Context, dst EndpointOwner) error {
 }
 
 func (p *ParkingNode) DiscoverOwnedEndpoints(ctx context.Context, original EndpointOwner) error {
-	ifaceNames, err := listOwnedInterfaceNames(ctx, p, trackedIfaceNames(original.GetEndpoints(), p.GetEndpoints()))
+	ifaceNames, err := listOwnedInterfaceNames(
+		ctx,
+		p,
+		trackedIfaceNames(original.GetEndpoints(), p.GetEndpoints()),
+	)
 	if err != nil {
 		return err
 	}
@@ -166,7 +170,10 @@ func (p *ParkingNode) DiscoverOwnedEndpoints(ctx context.Context, original Endpo
 	return nil
 }
 
-func (p *ParkingNode) captureCandidates(ctx context.Context, src EndpointOwner) ([]Endpoint, error) {
+func (p *ParkingNode) captureCandidates(
+	ctx context.Context,
+	src EndpointOwner,
+) ([]Endpoint, error) {
 	tracked := append([]Endpoint(nil), src.GetEndpoints()...)
 	endpoints := make([]Endpoint, 0, len(tracked))
 	knownIfaceNames := make(map[string]struct{}, len(tracked))
@@ -199,7 +206,11 @@ func (p *ParkingNode) captureCandidates(ctx context.Context, src EndpointOwner) 
 
 	runtimeIfaceNames, err := listOwnedInterfaceNames(ctx, src, nil)
 	if err != nil {
-		return nil, fmt.Errorf("failed to discover runtime interfaces for node %q: %w", src.GetShortName(), err)
+		return nil, fmt.Errorf(
+			"failed to discover runtime interfaces for node %q: %w",
+			src.GetShortName(),
+			err,
+		)
 	}
 
 	for _, ifaceName := range runtimeIfaceNames {
@@ -231,7 +242,11 @@ func trackedIfaceNames(endpointSets ...[]Endpoint) map[string]struct{} {
 	return ifaceNames
 }
 
-func listOwnedInterfaceNames(ctx context.Context, node Node, knownIfaceNames map[string]struct{}) ([]string, error) {
+func listOwnedInterfaceNames(
+	ctx context.Context,
+	node Node,
+	knownIfaceNames map[string]struct{},
+) ([]string, error) {
 	var ifaces []string
 
 	err := node.ExecFunction(ctx, func(_ ns.NetNS) error {

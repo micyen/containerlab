@@ -2120,7 +2120,11 @@ func (n *sros) LifecycleStartContainers(ctx context.Context) (bool, error) {
 
 		if _, err := n.Runtime.StartContainer(ctx, c.Config().LongName, c); err != nil {
 			for i := len(startedComponents) - 1; i >= 0; i-- {
-				_ = n.Runtime.StopContainer(ctx, startedComponents[i].Config().LongName, n.StopSignal)
+				_ = n.Runtime.StopContainer(
+					ctx,
+					startedComponents[i].Config().LongName,
+					n.StopSignal,
+				)
 			}
 
 			return false, fmt.Errorf(
@@ -2181,7 +2185,10 @@ func (n *sros) LifecycleStopContainers(ctx context.Context) error {
 		}
 	}
 
-	log.Warnf("node %q component stop returned errors but all components are stopped", n.Cfg.ShortName)
+	log.Warnf(
+		"node %q component stop returned errors but all components are stopped",
+		n.Cfg.ShortName,
+	)
 
 	return nil
 }

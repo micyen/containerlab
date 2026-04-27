@@ -12,7 +12,8 @@ import (
 func TestWithTopologyVarsFiles_setsAbsPathWithoutTopology(t *testing.T) {
 	t.Parallel()
 
-	// the following isn't an actual vars file, but we just need a valid path to check the abs handling:
+	// the following isn't an actual vars file, but we just need a valid path to check the abs
+	// handling:
 	varsPath := filepath.Join("test_data", "topo1.yml")
 
 	c, err := NewContainerLab(WithTopologyVarsFiles([]string{varsPath}))

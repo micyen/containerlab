@@ -216,7 +216,8 @@ func (c *CLab) applyAnsibleHostEmitFlagsForHeterogeneousCredentials(
 		if s == clabtypes.CredentialTopologyDefaults {
 			anyDef = true
 		}
-		if s != clabtypes.CredentialTopologyUnset && s != clabtypes.CredentialTopologyDefaults {
+		if s != clabtypes.CredentialTopologyUnset &&
+			s != clabtypes.CredentialTopologyDefaults {
 			anyNonDef = true
 		}
 	}
@@ -260,7 +261,9 @@ func (c *CLab) buildAnsibleKindProps(
 
 	anyFromDefaults := false
 	for _, n := range nodes {
-		if topo.GetNodeCredentialsTopologySource(n.ShortName) == clabtypes.CredentialTopologyDefaults {
+		if topo.GetNodeCredentialsTopologySource(
+			n.ShortName,
+		) == clabtypes.CredentialTopologyDefaults {
 			anyFromDefaults = true
 			break
 		}
@@ -409,7 +412,8 @@ func (c *CLab) applyNornirHostEmitFlagsForHeterogeneousCredentials(
 		if s == clabtypes.CredentialTopologyDefaults {
 			anyDef = true
 		}
-		if s != clabtypes.CredentialTopologyUnset && s != clabtypes.CredentialTopologyDefaults {
+		if s != clabtypes.CredentialTopologyUnset &&
+			s != clabtypes.CredentialTopologyDefaults {
 			anyNonDef = true
 		}
 	}
@@ -461,7 +465,9 @@ func (c *CLab) buildNornirKindProps(
 
 	anyFromDefaults := false
 	for _, n := range nodes {
-		if topo.GetNodeCredentialsTopologySource(n.ShortName) == clabtypes.CredentialTopologyDefaults {
+		if topo.GetNodeCredentialsTopologySource(
+			n.ShortName,
+		) == clabtypes.CredentialTopologyDefaults {
 			anyFromDefaults = true
 			break
 		}

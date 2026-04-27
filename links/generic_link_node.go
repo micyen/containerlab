@@ -55,7 +55,11 @@ func (g *GenericLinkNode) AdoptEndpoint(e Endpoint) error {
 
 	owner := e.GetNode()
 	if owner == nil {
-		return fmt.Errorf("node %q cannot adopt endpoint %q without an owner", g.shortname, e.GetIfaceName())
+		return fmt.Errorf(
+			"node %q cannot adopt endpoint %q without an owner",
+			g.shortname,
+			e.GetIfaceName(),
+		)
 	}
 
 	if owner.GetShortName() != g.shortname {

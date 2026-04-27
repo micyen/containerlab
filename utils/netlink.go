@@ -200,7 +200,7 @@ func CreateNamedNetNS(name string) (string, error) {
 	return nsPath, nil
 }
 
-// create a new netns or return the nspath if it exists
+// create a new netns or return the nspath if it exists.
 func CreateOrGetNamedNetNS(name string) (string, error) {
 	if nsPath, err := GetNamedNetNS(name); err == nil {
 		return nsPath, nil

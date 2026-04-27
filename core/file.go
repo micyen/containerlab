@@ -7,11 +7,11 @@ package core
 import (
 	"bytes"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
-	"io/fs"
-	"text/template"
 	"slices"
+	"text/template"
 
 	"github.com/hellt/envsubst"
 
@@ -38,7 +38,6 @@ func (c *CLab) LoadTopologyFromFile(topo string, varsFiles []string) error {
 	if err != nil {
 		return err
 	}
-	
 
 	// load the topology file/template
 	topologyTemplate, err := template.New(c.TopoPaths.TopologyFilenameBase()).
@@ -47,7 +46,7 @@ func (c *CLab) LoadTopologyFromFile(topo string, varsFiles []string) error {
 	if err != nil {
 		return err
 	}
-	
+
 	// if existing, load subtemplates that can be included in the topology file
 	fsys := os.DirFS(c.TopoPaths.TopologyFileDir())
 	subtemplates, err := fs.Glob(fsys, "clab_templates/*.gotmpl")
@@ -92,7 +91,11 @@ func (c *CLab) LoadTopologyFromFile(topo string, varsFiles []string) error {
 	// save the rendered topology to disk if requested
 	if ExportRenderedTopology != "" {
 		if err := os.WriteFile(ExportRenderedTopology, yamlFile, 0644); err != nil {
-			return fmt.Errorf("failed to save rendered topology to %s: %w", ExportRenderedTopology, err)
+			return fmt.Errorf(
+				"failed to save rendered topology to %s: %w",
+				ExportRenderedTopology,
+				err,
+			)
 		}
 		log.Infof("Rendered topology saved to %s", ExportRenderedTopology)
 	}
@@ -110,36 +113,36 @@ func (c *CLab) LoadTopologyFromFile(topo string, varsFiles []string) error {
 }
 
 func mergeTemplateVariables(dst, src any) any {
-    dstMap, dstOK := dst.(map[string]any)
-    srcMap, srcOK := src.(map[string]any)
+	dstMap, dstOK := dst.(map[string]any)
+	srcMap, srcOK := src.(map[string]any)
 
-    if !dstOK || !srcOK {
-        // For non-maps, src overrides dst
-        return src
-    }
+	if !dstOK || !srcOK {
+		// For non-maps, src overrides dst
+		return src
+	}
 
-    for key, srcVal := range srcMap {
-        if dstVal, exists := dstMap[key]; exists {
-            dstMap[key] = mergeTemplateVariables(dstVal, srcVal)
-        } else {
-            dstMap[key] = srcVal
-        }
-    }
+	for key, srcVal := range srcMap {
+		if dstVal, exists := dstMap[key]; exists {
+			dstMap[key] = mergeTemplateVariables(dstVal, srcVal)
+		} else {
+			dstMap[key] = srcVal
+		}
+	}
 
-    return dstMap
+	return dstMap
 }
 
 func findVarsFiles(paths *clabtypes.TopoPaths) ([]string, error) {
 	topo_dir := paths.TopologyFileDir()
 	vars_search_glob := fmt.Sprintf("%s%s.*", paths.TopologyFilenameWithoutExt(), varFileSuffix)
 	// e.g. lab_a.clab_vars.*
-	
+
 	// this will find both lab_a.clab_vars.yml, as well as lab_a.clab_vars.additions.yml;
 	// their values will be merged in alphabetical order
 	fsys := os.DirFS(topo_dir)
-	
+
 	valid_exts := []string{".yaml", ".yml", ".json"}
-	
+
 	result := []string{}
 	candidates, err := fs.Glob(fsys, vars_search_glob)
 	if err != nil {
@@ -151,7 +154,7 @@ func findVarsFiles(paths *clabtypes.TopoPaths) ([]string, error) {
 			result = append(result, filepath.Join(topo_dir, candidate))
 		}
 	}
-	
+
 	return result, nil
 }
 
@@ -159,11 +162,10 @@ func readTemplateVariables(paths *clabtypes.TopoPaths, varsFiles []string) (any,
 	if len(varsFiles) == 0 {
 		log.Debug("searching for template vars files")
 		foundFiles, err := findVarsFiles(paths)
-		
 		if err != nil {
 			return nil, err
 		}
-		
+
 		if len(foundFiles) == 0 {
 			// no var file found, assume the topology is not a template
 			// or a template that doesn't require external variables
@@ -171,9 +173,9 @@ func readTemplateVariables(paths *clabtypes.TopoPaths, varsFiles []string) (any,
 		}
 		varsFiles = foundFiles
 	}
-	
+
 	log.Debug("template vars", "files", varsFiles)
-	
+
 	templateVars := make(map[string]any)
 	// read all requested var files, and merge their contents into one:
 	for _, varsFile := range varsFiles {
@@ -181,12 +183,12 @@ func readTemplateVariables(paths *clabtypes.TopoPaths, varsFiles []string) (any,
 		if len(varsFile) == 0 {
 			continue
 		}
-		
+
 		data, err := os.ReadFile(varsFile)
 		if err != nil {
 			return nil, err
 		}
-	
+
 		var parsedVars map[string]any
 		err = yaml.Unmarshal(data, &parsedVars)
 		if err != nil {

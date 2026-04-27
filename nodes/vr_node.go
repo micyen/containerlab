@@ -18,8 +18,10 @@ import (
 	clabutils "github.com/srl-labs/containerlab/utils"
 )
 
-var VMInterfaceRegexp = regexp.MustCompile(`eth[1-9]\d*$`) // skipcq: GO-C4007
-var imageTagRE = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9._-]*$`)
+var (
+	VMInterfaceRegexp = regexp.MustCompile(`eth[1-9]\d*$`) // skipcq: GO-C4007
+	imageTagRE        = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9._-]*$`)
+)
 
 type VRNode struct {
 	DefaultNode

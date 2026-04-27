@@ -887,7 +887,9 @@ func credentialsPresent(c NodeCredentials) bool {
 // resolveTopologyCredentials returns username and password from the most specific topology level
 // where either field is set (node, then group, then kind, then defaults). Values are not merged
 // across levels.
-func (t *Topology) resolveTopologyCredentials(nodeName string) (username, password string, src CredentialTopologySource) {
+func (t *Topology) resolveTopologyCredentials(
+	nodeName string,
+) (username, password string, src CredentialTopologySource) {
 	nodeDefinition, ok := t.Nodes[nodeName]
 	if !ok {
 		return "", "", CredentialTopologyUnset
@@ -938,7 +940,8 @@ func (t *Topology) GetNodePassword(nodeName string) string {
 type CredentialTopologySource int
 
 const (
-	// CredentialTopologyUnset means no topology level set credentials (registry may still fill NodeConfig).
+	// CredentialTopologyUnset means no topology level set credentials (registry may still fill
+	// NodeConfig).
 	CredentialTopologyUnset CredentialTopologySource = iota
 	CredentialTopologyDefaults
 	CredentialTopologyKind

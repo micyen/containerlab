@@ -28,7 +28,11 @@ func TestGenerateAnsibleInventoryCredentialPlacement(t *testing.T) {
 			t.Fatalf("expected defaults credentials in all.vars, missing fragment; got:\n%s", got)
 		}
 		if n := strings.Count(got, "ansible_user: labuser"); n != 1 {
-			t.Fatalf("expected exactly one ansible_user: labuser (all.vars), got count=%d:\n%s", n, got)
+			t.Fatalf(
+				"expected exactly one ansible_user: labuser (all.vars), got count=%d:\n%s",
+				n,
+				got,
+			)
 		}
 	})
 
@@ -46,10 +50,12 @@ func TestGenerateAnsibleInventoryCredentialPlacement(t *testing.T) {
 		if !ok {
 			t.Fatal("missing children in inventory")
 		}
-		if strings.Contains(head, "ansible_user:") || strings.Contains(head, "ansible_password:") {
+		if strings.Contains(head, "ansible_user:") ||
+			strings.Contains(head, "ansible_password:") {
 			t.Fatalf("did not expect credentials in all.vars head, got head:\n%s", head)
 		}
-		if !strings.Contains(got, "ansible_user: kinduser") || !strings.Contains(got, "ansible_password: kindpass") {
+		if !strings.Contains(got, "ansible_user: kinduser") ||
+			!strings.Contains(got, "ansible_password: kindpass") {
 			t.Fatalf("expected kind credentials in inventory, got:\n%s", got)
 		}
 		if n := strings.Count(got, "ansible_user: kinduser"); n != 1 {
@@ -67,12 +73,14 @@ func TestGenerateAnsibleInventoryCredentialPlacement(t *testing.T) {
 			t.Fatal(err)
 		}
 		got := b.String()
-		if !strings.Contains(got, "ansible_password: secret-one") || !strings.Contains(got, "ansible_password: secret-two") {
+		if !strings.Contains(got, "ansible_password: secret-one") ||
+			!strings.Contains(got, "ansible_password: secret-two") {
 			t.Fatalf("expected per-host passwords, got:\n%s", got)
 		}
 		if strings.Contains(got, "      vars:\n        ansible_network_os:") &&
 			strings.Contains(got[strings.Index(got, "      vars:"):], "ansible_password: secret") {
-			// vars block after first "      vars:" might still include connection-only; ensure no kind-level password line
+			// vars block after first "      vars:" might still include connection-only; ensure no
+			// kind-level password line
 			idx := strings.Index(got, "ansible_network_os:")
 			if idx < 0 {
 				t.Fatal("missing network_os")
@@ -84,7 +92,10 @@ func TestGenerateAnsibleInventoryCredentialPlacement(t *testing.T) {
 			}
 			kindVars := rest[:endHosts]
 			if strings.Contains(kindVars, "ansible_password:") {
-				t.Fatalf("did not expect ansible_password in kind vars, got kind vars section:\n%s", kindVars)
+				t.Fatalf(
+					"did not expect ansible_password in kind vars, got kind vars section:\n%s",
+					kindVars,
+				)
 			}
 		}
 	})

@@ -196,7 +196,11 @@ func moveEndpoint(ctx context.Context, e Endpoint, dst Node) error {
 
 	for _, owned := range dst.GetEndpoints() {
 		if owned == e {
-			return fmt.Errorf("node %q already owns endpoint %q", dst.GetShortName(), e.GetIfaceName())
+			return fmt.Errorf(
+				"node %q already owns endpoint %q",
+				dst.GetShortName(),
+				e.GetIfaceName(),
+			)
 		}
 		if owned.GetIfaceName() == e.GetIfaceName() {
 			return fmt.Errorf(

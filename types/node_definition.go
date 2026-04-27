@@ -11,7 +11,8 @@ const (
 	importEnvsKey = "__IMPORT_ENVS"
 )
 
-// NodeCredentials holds login material for SSH/NETCONF/GNMI/etc. (topology defaults/kinds/groups/nodes).
+// NodeCredentials holds login material for SSH/NETCONF/GNMI/etc. (topology
+// defaults/kinds/groups/nodes).
 type NodeCredentials struct {
 	Username string `json:"username,omitempty" yaml:"username,omitempty"`
 	Password string `json:"-" yaml:"password,omitempty"`
